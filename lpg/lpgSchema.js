@@ -4,6 +4,6 @@ var lpgSchema = mongoose.Schema({
         
 });
 
-mongoose.model('Availability',availabiblitySchema);
+mongoose.model('lpg',lpgSchema);
 
-module.exports = mongoose.model('Availability');
+module.exports = mongoose.model('lpg');
