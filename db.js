@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 
 var url = `mongodb+srv://${process.env.MONGO_USER}:${MONGO_PASSWORD}@cluster0.2ahcutc.mongodb.net/?retryWrites=true&w=majority`;
 mongoose.connect(
-    ""
+    url
 )
 .then(()=>{
     console.log("Connection Successful");
