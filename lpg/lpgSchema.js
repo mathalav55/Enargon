@@ -1,9 +1,10 @@
 var mongoose = require('mongoose');
 
 var lpgSchema = mongoose.Schema({
-        
+        Date : Number,
+        week : Number,
 });
 
-mongoose.model('Availability',availabiblitySchema);
+mongoose.model('dailydata',lpgSchema);
 
-module.exports = mongoose.model('Availability');
+module.exports = mongoose.model('dailydata');
