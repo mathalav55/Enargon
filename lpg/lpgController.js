@@ -31,5 +31,5 @@ function getLastDay(data){
     return res.getTime();
 }
 module.exports = router;
-});
+
 
