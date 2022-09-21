@@ -9,6 +9,7 @@ router.get("/", async (req, res, next) => {
   var lastDay = getLastDay(req.body);
   var data = await lpg.find({
     Date: { $gte: firstDay.getTime(), $lte: lastDay.getTime() },
+    working : req.body.working
   });
   // var data = await lpg.find();
   if (req.body.week) {
@@ -19,8 +20,16 @@ router.get("/", async (req, res, next) => {
     len: data.length,
   });
 });
-function aggregateData(data) {
+
+// util functions
+function aggregateData(data,period) {
   //gets an array
+  const length= data.length;
+  var expandingMean = 0;
+  var sum = 0;
+  data.forEach(item =>{
+    sum += parseInt(data.type);
+  });
   //sends aggregate
 }
 function formatData(data) {
@@ -36,27 +45,32 @@ function formatData(data) {
     "5kg(FTL/FTR/BLUE)",
     "2kg(FTL/FTR/BLUE)",
   ];
-  var fields =[];
+  var dispatchfields =[];
+  var productionfields= [];
   var categoryMap = [];
   //mapping label and field
   for (var i = 0; i < categories.length; i++) {
     var mapObj = {
         label : labels[i],
-        fieldName : fields[i]
+        dispatchFieldName : dispatchfields[i],
+        productionFieldName : productionfields[i],
     };
     categoryMap.push(mapObj);
   }
   categoryMap.forEach((category) => {
     var newObj = {
-      x: category.label,
-      y: data[category.fieldName],
+      type: category.label,
+      prod: data[category.productionFieldName],
+      dis : data[category.dispatchFieldName]
     };
+    newData.push(newObj);
   });
+  return newData;
 }
 function getFirstDay(data) {
   var year = data.year != undefined ? data.year : 2021;
   var month = data.month != undefined ? data.month : 0;
-  var day = data.day != undefined ? data.day : 0;
+  var day = data.day != undefined ? data.day : 1;
   var res = new Date(year, month, day, 5, 30);
   return res;
 }
@@ -67,6 +81,9 @@ function getLastDay(data) {
   var res = new Date(year, month + 1, day, 5, 30);
   return res;
 }
+/*
+ no of weeks 
+ */
 function getWeekData(data, weekNo) {
   console.log("got into week");
   var recStartNo = weekNo * 6;
