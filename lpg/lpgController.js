@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
+// akhil
 var lpg = require('./lpgSchema');
 
 router.get('/',async(req,res,next)=>{
@@ -13,6 +14,7 @@ router.get('/',async(req,res,next)=>{
         len : data.length,
     });  
 });
+
 
 function getFirstDay(data){
     var year = data.year ? data.year : 2021;
@@ -29,3 +31,5 @@ function getLastDay(data){
     return res.getTime();
 }
 module.exports = router;
+});
+
