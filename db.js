@@ -1,7 +1,8 @@
 require('dotenv').config()
 var mongoose = require('mongoose');
 
-var url = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.2ahcutc.mongodb.net/NewData?retryWrites=true&w=majority`;
+const url = 'mongodb+srv://'+process.env.MONGO_USER+':'+process.env.MONGO_PASSWORD+'@cluster0.2ahcutc.mongodb.net/NewData?retryWrites=true&w=majority'
+
 mongoose.connect(
     url
 )

@@ -2,7 +2,7 @@ const express = require('express');
 const lpgController = require('./lpg/lpgController');
 const db = require('./db');
 const app = express();
-
+const path = require('path');   
 //json data handling
 app.use(express.urlencoded({
     extended : true
@@ -11,7 +11,9 @@ app.use(express.json());
 
 //entry points
 app.use('/lpg',lpgController);
-
+app.use('/home',(req, res, next) => {
+    res.sendFile(path.join(__dirname, 'frontend/index.html'));
+})
 //bad entry error handling
 app.use('/' , (req , res, next) =>{
     const err = new Error('not found');
