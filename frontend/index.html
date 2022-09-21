@@ -8,7 +8,8 @@
         .chart-container{
             position: relative;
             height: 40vh;
-            width: 80vw;
+            width: 50vw;
+            margin: 10px;
         }
     </style>
 </head>
@@ -18,7 +19,30 @@
     </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" integrity="sha512-ElRFoEQdI5Ht6kZvyzXhYG9NqjtkmlkfYk0wr6wHxU9JEHakS7UJZNeml5ALk+8IKlU6jDgMabC3vkumRokgJA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
-
+    var ctx = document.getElementById("chart");
+    const data = [{x: '10.2', prod: 100, dis: 50}, {x: '4.5', prod: 120, dis: 55}];
+    const cfg = {
+        type: 'bar',
+        data: {
+            labels: ['10.2', '4.5'],
+            datasets: [{
+                label: 'Dispatch',
+                data: data,
+                parsing: {
+                    yAxisKey: 'dis'
+                },
+                backgroundColor: '#f00'
+            }, {
+                label: 'procuction',
+                data: data,
+                parsing: {
+                    yAxisKey: 'prod'
+                },
+                backgroundColor: '#f0f'
+            },]
+        },
+    };
+    var chart = new Chart(ctx,cfg);
 </script>
 </body>
 </html>
