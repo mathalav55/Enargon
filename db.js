@@ -1,9 +1,13 @@
 require('dotenv').config()
 var mongoose = require('mongoose');
 
+<<<<<<< HEAD
 var url = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.2ahcutc.mongodb.net/?retryWrites=true&w=majority`;
+=======
+var url = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.2ahcutc.mongodb.net/NewData?retryWrites=true&w=majority`;
+>>>>>>> origin/main
 mongoose.connect(
-    ""
+    url
 )
 .then(()=>{
     console.log("Connection Successful");
