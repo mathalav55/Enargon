@@ -9,6 +9,9 @@ router.get("/", async (req, res, next) => {
 
   var firstDay = getFirstDay(req.body);
   var lastDay = getLastDay(req.body);
+  if( req.body.day){
+    lastDay = firstDay;
+  }
   var data = await lpg.find({
     Date: { $gte: firstDay.getTime(), $lte: lastDay.getTime() },
     working: req.body.working,
@@ -20,24 +23,26 @@ router.get("/", async (req, res, next) => {
   res.status(200).json({
     message: "all good ...",
     len: data.length,
+    formattedData : formatData(data),
   });
 });
 
-// util functions
-function aggregateData(data) {
-  //prodcution sum
-  //dispatch sum
-  //gets an array
-  const length = data.length;
-  var expandingMean = 0;
-  var sum = 0;
-  //sum for all categories
-  data.forEach((item) => {
-    sum += parseInt(data.type);
-  });
-  //sends aggregate
-}
+// // util functions
+// function aggregateData(data) {
+//   //prodcution sum
+//   //dispatch sum
+//   //gets an array
+//   const length = data.length;
+//   var expandingMean = 0;
+//   var sum = 0;
+//   //sum for all categories
+//   data.forEach((item) => {
+//     sum += parseInt(data.type);
+//   });
+//   //sends aggregate
+// }
 function formatData(data) {
+  data = data[0];
   var newData = [];
   var labels = [
     "14.2kg",
@@ -50,28 +55,28 @@ function formatData(data) {
     "2kg(FTL/FTR/BLUE)",
   ];
   var dispatchfields = [
-    "Days_Production_14.2kg",
-    "Days_Production_19kg",
-    "Days_Production_5kg(RED)",
-    "Days_Production_35kg",
-    "Days_Production_47.5",
-    "Days_Production_425kg",
-    "Days_Production_5kg(FTL/FTR/BLUE)",
-    "Days_Production_2kg(FTL/FTR/BLUE)",
+    "Day's_Production_14.2kg",
+    "Day's_Production_19kg",
+    "Day's_Production_5kg(RED)",
+    "Day's_Production_35kg",
+    "Day's_Production_47.5",
+    "Day's_Production_425kg",
+    "Day's_Production_5kg(FTL/FTR/BLUE)",
+    "Day's_Production_2kg(FTL/FTR/BLUE)",
   ];
   var productionfields = [
-    "Days_Despatches_14.2kg",
-    "Days_Despatches_19kg",
-    "Days_Despatches_5kg(RED)",
-    "Days_Despatches_35kg",
-    "Days_Despatches_47.5",
-    "Days_Despatches_425kg",
-    "Days_Despatches_5kg(FTL/FTR/BLUE)",
-    "Days_Despatches_2kg(FTL/FTR/BLUE)",
+    "Day's_Despatches_14.2kg",
+    "Day's_Despatches_19kg",
+    "Day's_Despatches_5kg(RED)",
+    "Day's_Despatches_35kg",
+    "Day's_Despatches_47.5",
+    "Day's_Despatches_425kg",
+    "Day's_Despatches_5kg(FTL/FTR/BLUE)",
+    "Day's_Despatches_2kg(FTL/FTR/BLUE)",
   ];
   var categoryMap = [];
   //mapping label and field
-  for (var i = 0; i < categories.length; i++) {
+  for (var i = 0; i < labels.length; i++) {
     var mapObj = {
       label: labels[i],
       dispatchFieldName: dispatchfields[i],
@@ -85,6 +90,7 @@ function formatData(data) {
       prod: data[category.productionFieldName],
       dis: data[category.dispatchFieldName],
     };
+
     newData.push(newObj);
   });
   return newData;
@@ -94,6 +100,7 @@ function getFirstDay(data) {
   var month = data.month != undefined ? data.month : 0;
   var day = data.day != undefined ? data.day : 1;
   var res = new Date(year, month, day, 5, 30);
+  console.log(res);
   return res;
 }
 function getLastDay(data) {
@@ -101,6 +108,7 @@ function getLastDay(data) {
   var month = data.month != undefined ? data.month : 11;
   var day = data.day != undefined ? data.day : 0;
   var res = new Date(year, month + 1, day, 5, 30);
+  console.log(res);
   return res;
 }
 /*
