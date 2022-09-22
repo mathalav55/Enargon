@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
 var lpgSchema = mongoose.Schema({
-        Date : Number,
+        date : Number,
         working : String
 });
 
