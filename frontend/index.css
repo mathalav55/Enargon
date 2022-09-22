@@ -1,0 +1,97 @@
+* {
+  box-sizing: border-box;
+  margin: 0%;
+  padding: 0%;
+}
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: center;
+  text-align: center;
+  padding: 15px;
+  /* margin: 5px 30px; */
+  border-radius: 15px;
+  box-shadow: 1px 1px 1px gray;
+  background-image: linear-gradient(to right, #c1f0fc, #6dd5ed);
+}
+.header:hover {
+  box-shadow: 5px 5px 10px black;
+  transition-duration: 0.2s;
+}
+.NavbarHeading {
+  color: black;
+  text-shadow: 1px 1px 1px white;
+  text-decoration: underline;
+}
+.headingData {
+  margin: 2px;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-weight: bolder;
+  color: black;
+  text-shadow: 1px 1px 2px gray;
+}
+.YearSection,
+.monthsSection,
+.WeeksSection,
+.DaysSection {
+  display: none;
+}
+.allButtonsContainerClass {
+  display: none;
+}
+.CategoryButtonContainer {
+  display: flex;
+  justify-content: space-around;
+  padding: 15px;
+  background-color: rgb(30, 210, 30);
+}
+.CategoryButtonContainer button {
+  height: fit-content;
+  padding: 3px 5px;
+  background-color: rgb(8, 240, 8);
+  border: none;
+  font-size: 25px;
+  font-weight: bolder;
+}
+.CategoryButtonContainer button:hover {
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 2px 2px 5px black;
+  transition-duration: 0.2s;
+}
+.getDetailsBtn {
+  background-color: rgb(52, 179, 247);
+  color: white;
+  border: none;
+  padding: 4px 6px;
+  font-weight: bolder;
+  text-shadow: 1px 1px 1px black;
+  border-radius: 2px;
+  cursor: pointer;
+  font-size: 15px;
+}
+.getDetailsBtn:hover{
+  box-shadow: 2px 2px 4px black;
+  transition-duration: 0.2s;
+}
+
+.chart-container{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  text-align: center;
+  flex-wrap: wrap;
+  margin-top: 15px;
+}
+.chartOne , .chartTwo{
+  /* border: 1px solid black; */
+  width: 45%;
+  border-radius: 20px;
+  box-shadow: 2px 2px 5px black;  
+}
+.chartToggle{
+  display: none;
+}
+
+

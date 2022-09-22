@@ -1,55 +1,80 @@
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        .chart-container{
-            position: relative;
-            height: 40vh;
-            width: 50vw;
-            margin: 10px;
-        }
-    </style>
-</head>
-<body>
-    <div class="chart-container">
-        <canvas id="chart"></canvas>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LPG Data</title>
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"
+      integrity="sha512-ElRFoEQdI5Ht6kZvyzXhYG9NqjtkmlkfYk0wr6wHxU9JEHakS7UJZNeml5ALk+8IKlU6jDgMabC3vkumRokgJA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+
+    <div class="CategoryButtonContainer">
+      <h1 class="NavbarHeading">Select Category</h1>
+      <button onclick="monthBtn()">Months</button>
+      <button onclick="weekBtn()">Weeks</button>
+      <button onclick="dayBtn()">Days</button>
     </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" integrity="sha512-ElRFoEQdI5Ht6kZvyzXhYG9NqjtkmlkfYk0wr6wHxU9JEHakS7UJZNeml5ALk+8IKlU6jDgMabC3vkumRokgJA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script>
-    //add number of holidays
-    var ctx = document.getElementById("chart");
-    const data = [{type: '10.2', prod: 100, dis: 50}, {type: '4.5', prod: 120, dis: 55}];
-    const labels = [];
-    data.forEach(item=>{
-        labels.push(item.type);
-    });
-    const cfg = {
-        type: 'bar',
-        data: {
-            labels,
-            datasets: [{
-                label: 'Dispatch',
-                data: data,
-                parsing: {
-                    yAxisKey: 'dis',
-                    xAxisKey : 'type'
-                },
-                backgroundColor: '#f00'
-            }, {
-                label: 'procuction',
-                data: data,
-                parsing: {
-                    yAxisKey: 'prod',
-                    xAxisKey : 'type'
-                },
-                backgroundColor: '#f0f'
-            },]
-        },
-    };
-    var chart = new Chart(ctx,cfg);
-</script>
-</body>
+    <div class="allButtonsContainerClass" id="allButtonsContainer">
+      <div class="header">
+        <!-- Year drop down list is here  -->
+        <div class="YearSection" id="YearSection">
+          <p class="headingData">Select Years</p>
+          <select name="Year" id="SelectYear" onchange="YearValue()">
+            <option>Years</option>
+            <option>2021</option>
+            <option>2022</option>
+          </select>
+        </div>
+
+        <!-- Months dropdown list is here  -->
+        <div class="monthsSection" id="monthsSection">
+          <p class="headingData">Select Months</p>
+          <select name="months" id="SelectMonth" onchange="MonthValue()">
+            <option style="display: none">Months</option>
+          </select>
+        </div>
+
+        <!-- Weeks dropdown list is here  -->
+        <div class="WeeksSection" id="WeeksSection">
+          <p class="headingData">Select Week</p>
+          <select name="Weeks" id="SelectWeek" onchange="WeekValue()">
+            <option>Weeks</option>
+            <option>Monday</option>
+            <option>Tuesday</option>
+          </select>
+        </div>
+
+        <!-- Days dropdown list is here  -->
+        <div class="DaysSection" id="DaysSection">
+          <p class="headingData">Select Days</p>
+          <select name="Weeks" id="SelectDay" onchange="DayValue()"></select>
+        </div>
+        <button onclick="GetDetails()" class="getDetailsBtn">
+          Get Details
+        </button>
+      </div>
+    </div>
+
+
+    <div class="chartToggle" id="chartToggleID">
+
+    <div class="chart-container" id="chart-container">
+      <div class="chartOne">
+        <canvas id="chart"></canvas>
+      </div>
+      <div class="chartTwo">
+        <canvas id="chart2"></canvas>
+      </div>
+    </div>
+  </div>
+
+  </body>
+  <script src="index.js"></script>
 </html>
