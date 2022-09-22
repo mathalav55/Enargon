@@ -91,6 +91,7 @@ function GetDetails() {
     day: dayval,
   };
   console.log(obj);
+  document.getElementById("chartToggleID").style.display = "block"
 }
 
 function monthBtn() {

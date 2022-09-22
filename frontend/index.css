@@ -88,9 +88,10 @@
   /* border: 1px solid black; */
   width: 45%;
   border-radius: 20px;
-  box-shadow: 2px 2px 5px black;
-
-  
+  box-shadow: 2px 2px 5px black;  
+}
+.chartToggle{
+  display: none;
 }
 
 
