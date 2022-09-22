@@ -118,17 +118,17 @@ function formatData(data) {
   return newData;
 }
 function getFirstDay(data) {
-  var year = data.year != undefined ? data.year : 2021;
-  var month = data.month != undefined ? data.month : 0;
-  var day = data.day != undefined ? data.day : 1;
+  var year = data.year != undefined ? parseInt(data.year) : 2021;
+  var month = data.month != undefined ? parseInt(data.month) : 0;
+  var day = data.day != undefined ? parseInt(data.day) : 1;
   var res = new Date(year, month, day, 5, 30);
   console.log(res);
   return res;
 }
 function getLastDay(data) {
-  var year = data.year != undefined ? data.year : 2021;
-  var month = data.month != undefined ? data.month : 11;
-  var day = data.day != undefined ? data.day : 0;
+  var year = data.year != undefined ? parseInt(data.year) : 2021;
+  var month = data.month != undefined ? parseInt(data.month) : 11;
+  var day = data.day != undefined ? parseInt(data.day) : 0;
   var res = new Date(year, month + 1, day, 5, 30);
   console.log(res);
   return res;

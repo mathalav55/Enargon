@@ -148,6 +148,7 @@ let options  = {
 }
 
 // charts data
+<<<<<<< HEAD:public/index.js
 function productionChart(data) {
   var ctx = document.getElementById("chart");
   const labels = [];
@@ -167,6 +168,39 @@ function productionChart(data) {
             xAxisKey: "type",
           },
           backgroundColor: "#f00",
+=======
+
+
+var ctx = document.getElementById("chart");
+var ctx2 = document.getElementById("chart2");
+
+    const data = [{type: '10.2', global: 100, cur: 50}, {type: '4.5', global: 120, cur: 55}];
+    const labels = [];
+    data.forEach(item=>{
+        labels.push(item.type);
+    });
+    const cfg = {
+        type: 'bar',
+        data: {
+            labels,
+            datasets: [{
+                label: 'Global',
+                data: data,
+                parsing: {
+                    yAxisKey: 'global',
+                    xAxisKey : 'type'
+                },
+                backgroundColor: '#f00'
+            }, {
+                label: 'Current',
+                data: data,
+                parsing: {
+                    yAxisKey: 'cur',
+                    xAxisKey : 'type'
+                },
+                backgroundColor: '#f0f'
+            },]
+>>>>>>> origin/main:frontend/index.js
         },
         {
           label: "Current",

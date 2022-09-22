@@ -16,7 +16,7 @@ app.use(
 app.use(express.json());
 app.use(express.static(publicPath));
 
-//entry points
+
 app.use("/lpg", lpgController);
 app.use("/home", (req, res, next) => {
   res.sendFile(path.join(__dirname, "public/index.html"));
@@ -26,7 +26,7 @@ app.use("/", (req, res, next) => {
   const err = new Error("not found");
   err.status = 404;
   next(err);
-});
+})
 //error handling
 app.use((err, req, res, next) => {
   res.status(err.status || 500);
