@@ -10,11 +10,12 @@ app.use(express.urlencoded({
 app.use(express.json());
 
 //entry points
+app.use(express.static('frontend'))
 app.use('/lpg',lpgController);
 app.use('/home',(req, res, next) => {
     res.sendFile(path.join(__dirname, 'frontend/index.html'));
 })
-//bad entry error handling
+//bad entry error handlinguser
 app.use('/' , (req , res, next) =>{
     const err = new Error('not found');
     err.status = 404;

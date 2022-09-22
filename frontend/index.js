@@ -126,7 +126,8 @@ function dayBtn() {
 
 
 var ctx = document.getElementById("chart");
-var ctx2 = document.getElementById("chart2")
+var ctx2 = document.getElementById("chart2");
+
     const data = [{type: '10.2', global: 100, cur: 50}, {type: '4.5', global: 120, cur: 55}];
     const labels = [];
     data.forEach(item=>{
