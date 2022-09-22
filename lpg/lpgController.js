@@ -42,6 +42,9 @@ router.get("/", async (req, res, next) => {
 //   //sends aggregate
 // }
 function formatData(data) {
+  if(data.length == 0){
+    return "no data"
+  }
   data = data[0];
   var newData = [];
   var labels = [
