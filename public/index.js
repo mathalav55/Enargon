@@ -2,6 +2,19 @@ let selectYearEle = document.getElementById("SelectYear");
 let selectMonthsEle = document.getElementById("SelectMonth");
 let DayList = document.getElementById("SelectDay");
 var WeekList = document.getElementById("SelectWeek");
+let url = "/lpg";
+console.log("going til here");
+// async function fetching(){
+//   try{
+//     fetch(url)
+//     .then((res) =>  res.json())
+//     .then((data) =>  console.log(data.res.production))
+//     .catch((err) => console.log(err));
+//   }catch(err){
+//     console.log(err)
+//   }
+// }
+// fetching()
 
 let Years = ["2021", "2022"];
 let months = [
@@ -83,17 +96,6 @@ function DayValue() {
   console.log(selectedValue);
 }
 
-function GetDetails() {
-  let obj = {
-    year: yearval,
-    month: monthval,
-    week: weekval,
-    day: dayval,
-  };
-  console.log(obj);
-  document.getElementById("chartToggleID").style.display = "block"
-}
-
 function monthBtn() {
   let year = document.getElementById("YearSection");
   let month = document.getElementById("monthsSection");
@@ -120,9 +122,53 @@ function dayBtn() {
   day.style.display = "block";
 }
 
+let fetchedProductionData;
+async function GetDetails() {
+  let obj = {
+    year: yearval,
+    month: monthval,
+    week: weekval,
+    day: dayval,
+  };
+  console.log(obj);
+  document.getElementById("chartToggleID").style.display = "block";
+let options  = {
+  method : "GET",
+  body : JSON.stringify(obj)
+}
 
+  fetch(url,options)
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data.res.production);
+      productionChart(data.res.production);
+      dispatchChart(data.res.dispatch);
+    })
+    .catch((err) => console.log(err));
+}
 
 // charts data
+<<<<<<< HEAD:public/index.js
+function productionChart(data) {
+  var ctx = document.getElementById("chart");
+  const labels = [];
+  data.forEach((item) => {
+    labels.push(item.type);
+  });
+  const cfg = {
+    type: "bar",
+    data: {
+      labels,
+      datasets: [
+        {
+          label: "Global",
+          data: data,
+          parsing: {
+            yAxisKey: "global",
+            xAxisKey: "type",
+          },
+          backgroundColor: "#f00",
+=======
 
 
 var ctx = document.getElementById("chart");
@@ -154,36 +200,55 @@ var ctx2 = document.getElementById("chart2");
                 },
                 backgroundColor: '#f0f'
             },]
+>>>>>>> origin/main:frontend/index.js
         },
-    };
-    var chart = new Chart(ctx,cfg);
+        {
+          label: "Current",
+          data: data,
+          parsing: {
+            yAxisKey: "current",
+            xAxisKey: "type",
+          },
+          backgroundColor: "#f0f",
+        },
+      ],
+    },
+  };
+  var chart = new Chart(ctx, cfg);
+}
 
-    const data2 = [{type: '10.2', global: 100, cur: 50}, {type: '4.5', global: 120, cur: 55}];
-    const labels2 = [];
-    data2.forEach(item=>{
-        labels2.push(item.type);
-    });
-    const cfg2 = {
-        type: 'bar',
-        data: {
-             labels2,
-            datasets: [{
-                label: 'Global',
-                data: data2,
-                parsing: {
-                    yAxisKey: 'global',
-                    xAxisKey : 'type'
-                },
-                backgroundColor: '#f00'
-            }, {
-                label: 'Current',
-                data: data2,
-                parsing: {
-                    yAxisKey: 'cur',
-                    xAxisKey : 'type'
-                },
-                backgroundColor: '#f0f'
-            },]
+function dispatchChart(data) {
+  var ctx2 = document.getElementById("chart2");
+
+  const labels2 = [];
+  data.forEach((item) => {
+    labels2.push(item.type);
+  });
+  const cfg2 = {
+    type: "bar",
+    data: {
+      labels2,
+      datasets: [
+        {
+          label: "Global",
+          data: data,
+          parsing: {
+            yAxisKey: "global",
+            xAxisKey: "type",
+          },
+          backgroundColor: "#f00",
         },
-    };
-    var chart = new Chart(ctx2,cfg2);
+        {
+          label: "Current",
+          data: data,
+          parsing: {
+            yAxisKey: "current",
+            xAxisKey: "type",
+          },
+          backgroundColor: "#f0f",
+        },
+      ],
+    },
+  };
+  var chart = new Chart(ctx2, cfg2);
+}
