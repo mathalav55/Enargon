@@ -3,6 +3,36 @@ let selectMonthsEle = document.getElementById("SelectMonth");
 let DayList = document.getElementById("SelectDay");
 var WeekList = document.getElementById("SelectWeek");
 let url = "/lpg";
+const barCfg = {
+  type: "bar",
+  data: {
+    datasets: [
+      {
+        label: "Global",
+        data: [],
+        parsing: {
+          yAxisKey: "global",
+          xAxisKey: "type",
+        },
+        backgroundColor: "#f00",
+      },
+      {
+        label: "Current",
+        data: [],
+        parsing: {
+          yAxisKey: "current",
+          xAxisKey: "type",
+        },
+        backgroundColor: "#f0f",
+      },
+    ],
+  },
+};
+var ctx2 = document.getElementById("chart2");
+var ctx = document.getElementById("chart");
+var prodChartElement = new Chart(ctx, barCfg);
+var disChartElement = new Chart(ctx2, barCfg);
+
 console.log("going til here");
 // async function fetching(){
 //   try{
@@ -133,16 +163,25 @@ async function GetDetails() {
   console.log(obj);
   document.getElementById("chartToggleID").style.display = "block";
 let options  = {
-  method : "GET",
+  method : "POST",  
+  headers : {
+    "Content-Type" : "application/json"
+  },
   body : JSON.stringify(obj)
 }
 
   fetch(url,options)
     .then((res) => res.json())
     .then((data) => {
-      console.log(data.res.production);
-      productionChart(data.res.production);
-      dispatchChart(data.res.dispatch);
+      console.log(data.res)
+      if(data.res){
+        productionChart(data.res.production);
+        dispatchChart(data.res.dispatch);
+      }else{
+        productionChart([]);
+        dispatchChart([]);
+        alert("no data found");
+      }
     })
     .catch((err) => console.log(err));
 }
@@ -150,71 +189,21 @@ let options  = {
 // charts data
 function productionChart(data) {
   var ctx = document.getElementById("chart");
-  const labels = [];
-  data.forEach((item) => {
-    labels.push(item.type);
-  });
-  const cfg = {
-    type: "bar",
-    data: {
-      labels,
-      datasets: [
-        {
-          label: "Global",
-          data: data,
-          parsing: {
-            yAxisKey: "global",
-            xAxisKey: "type",
-          },
-          backgroundColor: "#f00",
-        },
-        {
-          label: "Current",
-          data: data,
-          parsing: {
-            yAxisKey: "current",
-            xAxisKey: "type",
-          },
-          backgroundColor: "#f0f",
-        },
-      ],
-    },
-  };
-  var chart = new Chart(ctx, cfg);
+  // const labels = [];
+  // data.forEach((item) => {
+  //   labels.push(item.type);
+  // });
+  barCfg.data.datasets[0].data = data;
+  barCfg.data.datasets[1].data = data;
+  prodChartElement.update();
 }
 
 function dispatchChart(data) {
-  var ctx2 = document.getElementById("chart2");
-
   const labels2 = [];
   data.forEach((item) => {
     labels2.push(item.type);
   });
-  const cfg2 = {
-    type: "bar",
-    data: {
-      labels2,
-      datasets: [
-        {
-          label: "Global",
-          data: data,
-          parsing: {
-            yAxisKey: "global",
-            xAxisKey: "type",
-          },
-          backgroundColor: "#f00",
-        },
-        {
-          label: "Current",
-          data: data,
-          parsing: {
-            yAxisKey: "current",
-            xAxisKey: "type",
-          },
-          backgroundColor: "#f0f",
-        },
-      ],
-    },
-  };
-  var chart = new Chart(ctx2, cfg2);
+  barCfg.data.datasets[0].data = data;
+  barCfg.data.datasets[1].data = data;
+  disChartElement.update();
 }

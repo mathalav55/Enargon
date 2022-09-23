@@ -30,16 +30,12 @@ var dispatchfields = [
   "dayDespatches2KgFtl_Ftr__Blue__",
 ];
 var allFields = productionfields.concat(dispatchfields);
-
-
-
 var express = require("express");
-const { aggregate } = require("./lpgSchema");
 var router = express.Router();
 // akhil
 var lpg = require("./lpgSchema");
 
-router.get("/", async (req, res, next) => {
+router.post("/", async (req, res, next) => {
   //get year sum
 
   var firstDay = getFirstDay(req.body);
@@ -59,16 +55,17 @@ router.get("/", async (req, res, next) => {
     length : currentData.length
   };
   if(currentData.length > 0){
-    var globalData = await getGlobalAggregates();
+    var globalData = await getGlobalAggregates(lastDay);
     response = {
-      res : combineData(currentData.length,formatData(globalData),formatData(currentData))
+      res : combineData(currentData.length,formatData(globalData),formatData(currentData)),
+      datalength : currentData.length
     }
   }
   res.status(200).json(response);
 });
 
 //global aggregates for comparision
-async function getGlobalAggregates(){
+async function getGlobalAggregates(lastDay){
   //field list
   //loop for preparation
   var groupArg = { 
@@ -79,17 +76,19 @@ async function getGlobalAggregates(){
       var temp = { $avg: `$${allFields[i]}` }
       groupArg[allFields[i]] = temp;
   }//single field
+  // console.log(allFields);
   var aggregate = await lpg.aggregate([
-      { $match : { working : "true" } },
+      { $match : { "$and":[{ working : "true"},{ date: { $lte: lastDay.getTime() } } ] }  },
       { $group: groupArg}
   ]);
+  console.log(aggregate[0]);
   return aggregate[0];
 }
 function aggregateData(data){
    var newData = Object.create(data[0]);
    newData = newData.toObject();
    var opData;
-   for( var i = 0; i < data.length ; i++){
+   for( var i = 1; i < data.length ; i++){
        opData = data[i].toObject();
        for(var j = 0; j < allFields.length ; j++){
           newData[allFields[j]] += opData[allFields[j]];
@@ -120,6 +119,7 @@ function formatData(data) {
 function getFirstDay(data) {
   var year = data.year != undefined ? parseInt(data.year) : 2021;
   var month = data.month != undefined ? parseInt(data.month) : 0;
+  
   var day = data.day != undefined ? parseInt(data.day) : 1;
   var res = new Date(year, month, day, 5, 30);
   console.log(res);
@@ -134,7 +134,6 @@ function getLastDay(data) {
   return res;
 }
 function combineData(...args){
-  console.log(args[0],args[1]);
   var sample = {
     "production" : [
       
@@ -160,7 +159,6 @@ function combineData(...args){
     sample.production.push(prod);
     sample.dispatch.push(dis);
   };
-  console.log(sample);
   return sample;
 }
 module.exports = router;
