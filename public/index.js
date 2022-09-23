@@ -46,13 +46,16 @@ function YearValue() {
 
 let min = 1;
 let MonthValueForGettingWeek;
+let demoWeekListValue;
+let dateArr = [];
+
 function MonthValue() {
   // getting the month value ex: jan : 1,feb: 2....
-
+  dayval = undefined
   let max;
   let selectedValue =
     selectMonthsEle.options[selectMonthsEle.selectedIndex].value;
-  // console.log(Number(selectedValue) + 1);
+  console.log(Number(selectedValue) + 1);
   monthval = selectedValue;
   monthval = selectedValue;
   // console.log(SelectionofDaysYearValue)
@@ -73,10 +76,6 @@ function MonthValue() {
   }
   DayList.innerHTML = final;
 
-  WeekValue();
-}
-
-function WeekValue() {
   function endFirstWeek(firstDate, firstDay) {
     if (!firstDay) {
       return 7 - firstDate.getDay();
@@ -112,37 +111,56 @@ function WeekValue() {
     yearValueForGettingWeek
   );
   console.log(weeksList);
-  let startDay, endDay;
-  const option = document.createElement("option");
-  var final = "";
-  for (let i = 0; i < weeksList.length; i++) {
-    startDay = new Date(
-      yearValueForGettingWeek,
-      MonthValueForGettingWeek - 1,
-      weeksList[i].start
-    );
-    endDay = new Date(
-      yearValueForGettingWeek,
-      MonthValueForGettingWeek - 1,
-      weeksList[i].end
-    );
-    option.textContent = `${i+1}st Week  From [${startDay.toLocaleDateString()}] To [${endDay.toLocaleDateString()}]`;
-    let weekOption = `<option value="${i}">${option.textContent}</option>`;
-    // option.setAttribute("id");
-    final += weekOption;
-    // WeekList.appendChild(option);
+  demoWeekListValue = weeksList;
+  if (demoWeekListValue == undefined) {
+    window.alert("select month");
+  } else {
+    let startDay, endDay;
+    const option = document.createElement("option");
+    var final = "";
+    let finalResultWeek;
+    dateArr.length = 0
+    for (let i = 0; i < demoWeekListValue.length; i++) {
+      startDay = new Date(
+        yearValueForGettingWeek,
+        MonthValueForGettingWeek - 1,
+        demoWeekListValue[i].start
+      );
+      endDay = new Date(
+        yearValueForGettingWeek,
+        MonthValueForGettingWeek - 1,
+        demoWeekListValue[i].end
+      );
+      finalResultWeek = `start : ${startDay.toLocaleDateString()} - End : ${endDay.toLocaleDateString()}`;
+      dateArr.push(finalResultWeek);
+    }
+    console.log(dateArr);
   }
-  WeekList.innerHTML = final;
+  if (dateArr.length > 0) {
+    var final = ""
+    for (let i = 0; i < dateArr.length; i++) {
+      // let optionEle = document.createElement("option");
+      // optionEle.value = i;
+      // optionEle.innerHTML = dateArr[i];
+      // WeekList.appendChild(optionEle);
+      let weekOption = `<option value="${i}">${dateArr[i]}</option>`
+      final += weekOption
+    }
+    WeekList.innerHTML = final;
+  }
+}
 
+function WeekValue() {
   let selectedValue = WeekList.options[WeekList.selectedIndex].value;
-  week = selectedValue;
+  console.log(Number(selectedValue));
   weekval = selectedValue;
-  console.log(selectedValue);
+  dayval = undefined
 }
 
 function DayValue() {
   let selectedValue = DayList.options[DayList.selectedIndex].value;
-  day = selectedValue;
+  // day = selectedValue;
+  weekval = undefined
   dayval = selectedValue;
   console.log(selectedValue);
 }
@@ -166,9 +184,11 @@ function weekBtn() {
   let day = document.getElementById("DaysSection");
   day.style.display = "none";
   week.style.display = "block";
+  dayval = undefined
 }
 function dayBtn() {
   weekBtn();
+  weekval = undefined
   let day = document.getElementById("DaysSection");
   day.style.display = "block";
   let week = document.getElementById("WeeksSection");
@@ -238,7 +258,6 @@ function productionChart(data) {
 
 function dispatchChart(data) {
   var ctx2 = document.getElementById("chart2");
-
   const labels2 = [];
   data.forEach((item) => {
     labels2.push(item.type);
@@ -271,4 +290,3 @@ function dispatchChart(data) {
   };
   var chart = new Chart(ctx2, cfg2);
 }
-
