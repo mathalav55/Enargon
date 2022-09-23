@@ -29,6 +29,19 @@ var dispatchfields = [
   "dayDespatches5KgFtl_Ftr__Blue__",
   "dayDespatches2KgFtl_Ftr__Blue__",
 ];
+var bulkOpeningFields = [
+  "bulkOpening__Dom__",
+  "bulkOpening__Nd__",
+  "bulkClosing__Dom__",
+  "bulkClosing__Nd__"
+];
+var consumableFields = [
+  "closingGoodValves",
+  "closingGoodRegulators",
+  "closingORings",
+  "closingPvcSeal",
+  "closingScCaps"
+]
 var allFields = productionfields.concat(dispatchfields);
 var express = require("express");
 var router = express.Router();
@@ -37,7 +50,7 @@ var lpg = require("./lpgSchema");
 
 router.post("/", async (req, res, next) => {
   //get year sum
-
+  var currentData;
   var firstDay = getFirstDay(req.body);
   var lastDay = getLastDay(req.body);
   if (req.body.day) {
@@ -47,12 +60,14 @@ router.post("/", async (req, res, next) => {
   if(req.body.working){
     working = req.body.working
   }
-  var currentData = await lpg.find({
+  currentData = await lpg.find({
     date: { $gte: firstDay.getTime(), $lte: lastDay.getTime() },
     working,
   });
   var response = {
-    length : currentData.length
+    length : currentData.length,
+    firstDay,
+    lastDay
   };
   if(currentData.length > 0){
     var globalData = await getGlobalAggregates(lastDay);
@@ -64,6 +79,45 @@ router.post("/", async (req, res, next) => {
   res.status(200).json(response);
 });
 
+router.post('/bulk',async(req,res,next)=>{
+  //prepeare date from req
+  var date = new Date(parseInt(req.body.year), parseInt(req.body.month), parseInt(req.body.day), 5, 30);
+  //find values with the date
+  var data =await lpg.findOne( {date : date});
+  //prepare data for pie format { fieldname , value}
+  var result = {
+
+  };
+  data = data.toObject();
+  bulkOpeningFields.forEach(field=>{
+    result[field] = data[field];
+    console.log(field);
+  })
+  res.status(200).json({
+    result,
+    date,
+  })
+});
+
+router.post('/consume',async (req,res,next)=>{
+  //prepeare date from req
+  var date = new Date(parseInt(req.body.year), parseInt(req.body.month), parseInt(req.body.day), 5, 30);
+  //find values with the date
+  var data =await lpg.findOne( {date : date});
+  //prepare data for pie format { fieldname , value}
+  var result = {
+
+  };
+  data = data.toObject();
+  consumableFields.forEach(field=>{
+    result[field] = data[field];
+    console.log(field);
+  })
+  res.status(200).json({
+    result,
+    date,
+  })
+});
 //global aggregates for comparision
 async function getGlobalAggregates(lastDay){
   //field list
@@ -119,8 +173,10 @@ function formatData(data) {
 function getFirstDay(data) {
   var year = data.year != undefined ? parseInt(data.year) : 2021;
   var month = data.month != undefined ? parseInt(data.month) : 0;
-  
   var day = data.day != undefined ? parseInt(data.day) : 1;
+  if(data.week != undefined){
+    return getWeekDates(month,year)[0];
+  }
   var res = new Date(year, month, day, 5, 30);
   console.log(res);
   return res;
@@ -129,6 +185,9 @@ function getLastDay(data) {
   var year = data.year != undefined ? parseInt(data.year) : 2021;
   var month = data.month != undefined ? parseInt(data.month) : 11;
   var day = data.day != undefined ? parseInt(data.day) : 0;
+  if(data.week != undefined){
+    return getWeekDates(month,year)[1];
+  }
   var res = new Date(year, month + 1, day, 5, 30);
   console.log(res);
   return res;
@@ -160,5 +219,9 @@ function combineData(...args){
     sample.dispatch.push(dis);
   };
   return sample;
+}
+function getWeekDates(year,month){
+  var date = new Date();
+  return [date,date];
 }
 module.exports = router;
