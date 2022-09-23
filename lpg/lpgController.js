@@ -41,6 +41,9 @@ var consumableFields = [
   "closingORings",
   "closingPvcSeal",
   "closingScCaps"
+];
+var reciptsFieldsLabels = [
+
 ]
 var allFields = productionfields.concat(dispatchfields);
 var express = require("express");
@@ -50,6 +53,7 @@ var lpg = require("./lpgSchema");
 
 router.post("/", async (req, res, next) => {
   //get year sum
+  console.log(req.body)
   var currentData;
   var firstDay = getFirstDay(req.body);
   var lastDay = getLastDay(req.body);
@@ -65,9 +69,7 @@ router.post("/", async (req, res, next) => {
     working,
   });
   var response = {
-    length : currentData.length,
-    firstDay,
-    lastDay
+    length : currentData.length,  
   };
   if(currentData.length > 0){
     var globalData = await getGlobalAggregates(lastDay);
@@ -85,14 +87,17 @@ router.post('/bulk',async(req,res,next)=>{
   //find values with the date
   var data =await lpg.findOne( {date : date});
   //prepare data for pie format { fieldname , value}
-  var result = {
-
-  };
-  data = data.toObject();
-  bulkOpeningFields.forEach(field=>{
-    result[field] = data[field];
-    console.log(field);
-  })
+  var result = [];
+  if( data ){
+    data = data.toObject();
+    bulkOpeningFields.forEach(field=>{
+      result.push({
+        x : field,
+        y : data[field]
+      });
+    })
+  }
+  console.log(result)
   res.status(200).json({
     result,
     date,
@@ -105,14 +110,16 @@ router.post('/consume',async (req,res,next)=>{
   //find values with the date
   var data =await lpg.findOne( {date : date});
   //prepare data for pie format { fieldname , value}
-  var result = {
-
-  };
-  data = data.toObject();
-  consumableFields.forEach(field=>{
-    result[field] = data[field];
-    console.log(field);
-  })
+  var result = [];
+  if( data ){
+    data = data.toObject();
+    consumableFields.forEach(field=>{
+      result.push({
+        x : field,
+        y : data[field]
+      });
+    }) 
+  }
   res.status(200).json({
     result,
     date,
@@ -135,7 +142,7 @@ async function getGlobalAggregates(lastDay){
       { $match : { "$and":[{ working : "true"},{ date: { $lte: lastDay.getTime() } } ] }  },
       { $group: groupArg}
   ]);
-  console.log(aggregate[0]);
+  // console.log(aggregate[0]);
   return aggregate[0];
 }
 function aggregateData(data){
@@ -147,6 +154,8 @@ function aggregateData(data){
        for(var j = 0; j < allFields.length ; j++){
           newData[allFields[j]] += opData[allFields[j]];
        }
+       var temp = new Date(data[i].date);
+       console.log(temp);
    }
    return newData;
 }
@@ -175,10 +184,10 @@ function getFirstDay(data) {
   var month = data.month != undefined ? parseInt(data.month) : 0;
   var day = data.day != undefined ? parseInt(data.day) : 1;
   if(data.week != undefined){
-    return getWeekDates(month,year)[0];
+    return getWeekDates(month,year,parseInt(data.week))[0];
   }
   var res = new Date(year, month, day, 5, 30);
-  console.log(res);
+  // console.log(res);
   return res;
 }
 function getLastDay(data) {
@@ -186,10 +195,10 @@ function getLastDay(data) {
   var month = data.month != undefined ? parseInt(data.month) : 11;
   var day = data.day != undefined ? parseInt(data.day) : 0;
   if(data.week != undefined){
-    return getWeekDates(month,year)[1];
+    return getWeekDates(month,year,parseInt(data.week))[1];
   }
   var res = new Date(year, month + 1, day, 5, 30);
-  console.log(res);
+  // console.log(res);
   return res;
 }
 function combineData(...args){
@@ -220,8 +229,40 @@ function combineData(...args){
   };
   return sample;
 }
-function getWeekDates(year,month){
-  var date = new Date();
-  return [date,date];
+
+function getWeekDates(month, year,weekNo) {
+  let weeks = [],
+    firstDate = new Date(year, month, 1),
+    lastDate = new Date(year, month + 1, 0),
+    numDays = lastDate.getDate();
+
+  let start = 1;
+  var startDay,endDay;
+
+  let end = endFirstWeek(firstDate, 1);
+  while (start <= numDays) {
+    weeks.push({ start: start, end: end });
+    start = end + 1;
+    end = end + 7;
+    end = start === 1 && end === 8 ? 1 : end;
+    if (end > numDays) {
+      end = numDays;
+    }
+  }
+  startDay = new Date(year,month,weeks[weekNo].start);
+  endDay = new Date(year,month,weeks[weekNo].end+1);
+  weeks[0] = startDay;
+  weeks[1] = endDay;
+  return weeks;
+}
+function endFirstWeek(firstDate, firstDay) {
+  if (!firstDay) {
+    return 7 - firstDate.getDay();
+  }
+  if (firstDate.getDay() < firstDay) {
+    return firstDay - firstDate.getDay();
+  } else {
+    return 7 - firstDate.getDay() + firstDay;
+  }
 }
 module.exports = router;

@@ -84,6 +84,10 @@
   flex-wrap: wrap;
   margin-top: 15px;
 }
+.chart{
+  width: 45%;
+  border-radius: 20px;
+}
 .chartOne , .chartTwo{
   /* border: 1px solid black; */
   width: 45%;

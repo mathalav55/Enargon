@@ -3,7 +3,66 @@ let selectMonthsEle = document.getElementById("SelectMonth");
 let DayList = document.getElementById("SelectDay");
 var WeekList = document.getElementById("SelectWeek");
 let url = "/lpg";
+var prodElement = document.getElementById("productionChart");
+var disElement = document.getElementById("dispatchChart");
+var bulkChartEle = document.getElementById("bulkChart");
+var consumeElement = document.getElementById("consumeChart");
+let pieConfig ={
+  labels : ['one','two',"three"],
+  type: 'pie',
+  data:  {
+    labels : ['one','two','three'],
+    datasets: [
+      {
+        label: 'Dataset 1',
+        data: [10,30,40],
+        backgroundColor: [ '#b0f0ac','#f0f','#ff0'],
+      }
+    ],
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: 'Chart.js Pie Chart'
+      }
+    }
+  },
+}
+let barCfg = {
+  type: "bar",
+    data: {
+      datasets: [
+        {
+          label: "Global",
+          data: [],
+          parsing: {
+            yAxisKey: "global",
+            xAxisKey: "type",
+          },
+          backgroundColor: "#f00",
+        },
+        {
+          label: "Current",
+          data: [],
+          parsing: {
+            yAxisKey: "current",
+            xAxisKey: "type",
+          },
+          backgroundColor: "#f0f",
+        },
+      ],
+    },
+}
 
+var prodChart = new Chart(prodElement,barCfg);
+var disChart = new Chart(disElement,barCfg);
+var bulkChart = new Chart(bulkChartEle,pieConfig);
+var consumeChart = new Chart(consumeElement,pieConfig)
 let Years = ["2021", "2022"];
 let months = [
   "January",
@@ -180,95 +239,105 @@ async function GetDetails() {
   let obj = {
     year: yearval,
     month: monthval,
-    week: weekval,
     day: dayval,
   };
   console.log(obj);
-  document.getElementById("chartToggleID").style.display = "block";
+  // document.getElementById("chartToggleID").style.display = "block";
   let options = {
-    method: "GET",
-    body: JSON.stringify(obj),
+    method : "POST",
+    headers:{'Content-Type':'application/json'},
+    body : JSON.stringify(obj)
   };
-
+  console.log(options);
   fetch(url, options)
     .then((res) => res.json())
     .then((data) => {
-      console.log(data.res.production);
-      productionChart(data.res.production);
-      dispatchChart(data.res.dispatch);
+      console.log(data)
+      productionChart([]);
+      dispatchChart([]);
+      if(data.length != undefined){
+        alert("no data found");
+      }else{
+        productionChart(data.res.production);
+        dispatchChart(data.res.dispatch);
+      }
+      
     })
     .catch((err) => console.log(err));
+  fetch('/lpg/bulk',options).then(res=>res.json())
+  .then(data=>{
+    if( data.result != undefined){
+      if( data.result.length > 0)
+        getBulkChart(data.result);
+      else
+        alert('no data')
+    }
+    else{
+      alert('no data');
+    }
+  });
+
+  fetch('/lpg/consume',options).then(res=>res.json())
+  .then(data=>{
+    // console.log(data)  
+    if( data.result != undefined){
+      if( data.result.length > 0)
+        getConsumeChart(data.result);
+      else
+        alert('no data')
+    }
+    else{
+      alert('no data');
+    }
+  })
 }
 
 // charts data
 function productionChart(data) {
-  var ctx = document.getElementById("chart");
   const labels = [];
   data.forEach((item) => {
     labels.push(item.type);
   });
-  const cfg = {
-    type: "bar",
-    data: {
-      labels,
-      datasets: [
-        {
-          label: "Global",
-          data: data,
-          parsing: {
-            yAxisKey: "global",
-            xAxisKey: "type",
-          },
-          backgroundColor: "#f00",
-        },
-        {
-          label: "Current",
-          data: data,
-          parsing: {
-            yAxisKey: "current",
-            xAxisKey: "type",
-          },
-          backgroundColor: "#f0f",
-        },
-      ],
-    },
-  };
-  var chart = new Chart(ctx, cfg);
+  barCfg.data.datasets[0].data = data;
+  barCfg.data.datasets[1].data = data;
+  prodChart.update();
 }
 
 function dispatchChart(data) {
-  var ctx2 = document.getElementById("chart2");
-
   const labels2 = [];
   data.forEach((item) => {
     labels2.push(item.type);
   });
-  const cfg2 = {
-    type: "bar",
-    data: {
-      labels2,
-      datasets: [
-        {
-          label: "Global",
-          data: data,
-          parsing: {
-            yAxisKey: "global",
-            xAxisKey: "type",
-          },
-          backgroundColor: "#f00",
-        },
-        {
-          label: "Current",
-          data: data,
-          parsing: {
-            yAxisKey: "current",
-            xAxisKey: "type",
-          },
-          backgroundColor: "#f0f",
-        },
-      ],
-    },
-  };
-  var chart = new Chart(ctx2, cfg2);
+  barCfg.data.datasets[0].data = data;
+  barCfg.data.datasets[1].data = data;
+  disChart.update();
 }
 
+function getBulkChart(data){
+  var labels = [];
+  data.forEach((item) => {
+    labels.push(item.x);
+  });
+  var values = [];
+  data.forEach((item) => {
+    values.push(item.y);
+  });
+  pieConfig.data.labels = labels;
+  pieConfig.data.datasets[0].data = values;
+  bulkChart.update();
+}
+
+function getConsumeChart(data){
+  var labels = [];
+  data.forEach((item) => {
+    labels.push(item.x);
+  });
+  var values = [];
+  data.forEach((item) => {
+    values.push(item.y);
+  });
+  console.log('in consume function')
+  pieConfig.data.labels = labels;
+  pieConfig.data.datasets[0].data = values;
+  consumeChart.update();
+}
