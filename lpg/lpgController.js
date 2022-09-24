@@ -241,7 +241,7 @@ function getFirstDay(data) {
   if(data.week != undefined){
     return getWeekDates(month,year,parseInt(data.week))[0];
   }
-  var res = new Date(year, month, day, 5, 30);
+  var res = new Date(year, month, day, 0, 0);
   // console.log(res);
   return res;
 }
@@ -252,7 +252,7 @@ function getLastDay(data) {
   if(data.week != undefined){
     return getWeekDates(month,year,parseInt(data.week))[1];
   }
-  var res = new Date(year, month + 1, day, 5, 30);
+  var res = new Date(year, month + 1, day, 0, 0);
   // console.log(res);
   return res;
 }
