@@ -81,6 +81,7 @@ select:hover{
 }
 .bar{
   border-radius: .75rem;
+  height: 400px;
   background-color: #fff;
 }
 .pie{
