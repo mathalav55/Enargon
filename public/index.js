@@ -263,8 +263,8 @@ function chartInit() {
   var bulkCfgNd = { labels: ["one", "two", "three"], type: "pie", data: { labels: ["one", "two", "three"], datasets: [ { label: "Dataset 1", data: [10, 30, 40], backgroundColor: [], }, ], }, options: { responsive: true, plugins: { legend: { position: "top", }, title: { display: true, text: "Bulk Non-domestic", }, }, }, }
   var conscfg = { labels: ["one", "two", "three"], type: "doughnut", data: { labels: ["one", "two", "three"], datasets: [ { label: "Dataset 1", data: [10, 30, 40], backgroundColor: [], }, ], }, options: { responsive: true, plugins: { legend: { position: "top", }, title: { display: true, text: "Consumables", }, }, }, };
   var resCfg = { labels: ["one", "two", "three"], type: "pie", data: { labels: ["one", "two", "three"], datasets: [ { label: "Dataset 1", data: [10, 30, 40], backgroundColor: [], }, ], }, options: { responsive: true, plugins: { legend: { position: "top", }, title: { display: true, text: "Bulk Recipts", }, }, }, }
-  let prodCfg = { type: "bar", data: { datasets: [ { label: "Global", data: [], parsing: { yAxisKey: "global", xAxisKey: "type", }, backgroundColor: "", }, { label: "Current", data: [], parsing: { yAxisKey: "current", xAxisKey: "type", }, backgroundColor: "", }, ], }, options: { responsive: true,maintainAspectRatio : false, plugins: { legend: { position: "top", }, title: { display: true, text: "Production" }, }, scales: { x: { grid: { display: false } }, } }, };
-  let disCfg = { type: "bar", data: { datasets: [ { label: "Global", data: [], parsing: { yAxisKey: "global", xAxisKey: "type", }, backgroundColor: "", }, { label: "Current", data: [], parsing: { yAxisKey: "current", xAxisKey: "type", }, backgroundColor: "", }, ], }, options: { responsive: true,maintainAspectRatio : false, plugins: { legend: { position: "top", }, title: { display: true, text: "Dispatch", }, }, scales: { x: { grid: { display: false } }, } }, };
+  let prodCfg = { type: "bar", data: { datasets: [ { label: "Expected Production", data: [], parsing: { yAxisKey: "global", xAxisKey: "type", }, backgroundColor: "", }, { label: "Current Production", data: [], parsing: { yAxisKey: "current", xAxisKey: "type", }, backgroundColor: "", }, ], }, options: { responsive: true,maintainAspectRatio : false, plugins: { legend: { position: "top", }, title: { display: true, text: "Production" }, }, scales: { x: { grid: { display: false } }, } }, };
+  let disCfg = { type: "bar", data: { datasets: [ { label: "Expected Dispatch", data: [], parsing: { yAxisKey: "global", xAxisKey: "type", }, backgroundColor: "", }, { label: "Current Dispatch", data: [], parsing: { yAxisKey: "current", xAxisKey: "type", }, backgroundColor: "", }, ], }, options: { responsive: true,maintainAspectRatio : false, plugins: { legend: { position: "top", }, title: { display: true, text: "Dispatch", }, }, scales: { x: { grid: { display: false } }, } }, };
 
   prodChart = new Chart(prodElement, prodCfg);
   disChart = new Chart(disElement, disCfg);
@@ -381,7 +381,7 @@ function getColors(n){
   var lightness = 50;
   for(var i = 0; i < n ; i++){
     colors.push(`hsl(${hue},${saturation}%,${lightness}%)`);
-    hue += 10;
+    hue += 10;//difference between two colors
   }
   //console.log(colors);
   return colors;
