@@ -4,87 +4,110 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LPG Data</title>
+    <title>Dashboard</title>
+    <link rel="shortcut icon" href="./img/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/img/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="/index.css" />
   </head>
   <body>
+    
+    <header>
+      <div class="nav-container container">
+        <div class="nav-logo">
+          <img src="/img/logo.png" alt="" class="logo">
+        </div>
+        <div class="nav-items">
+
+        </div>
+      </div>
+    </header>
+    <main>
+      <!-- filerts -->
+      <div class="filters container">
+        <!--//mode selector -->
+        <div class="mode filter">
+          <select name="" id="mode-selector" onchange="changeMode(this)">
+            <option value="day">Day</option>
+            <option value="week">Week</option>
+            <option value="month">Month</option>
+          </select>
+        </div>
+        <!-- //filter selector -->
+        <div class="values filter">
+          <!-- yaer -->
+          <select class="value" name="" id="year">
+            <option value="">
+              year
+            </option>
+          </select>
+          <!-- for month -->
+          <select class="value" name="" id="month">
+            <option value="">month</option>
+          </select>
+          <!-- for week -->
+          <select class="value" name="" id="week">
+            <option value="">week</option>
+          </select>
+          <!-- for day -->
+          <input class="value show" type="date" id="date">
+
+        </div>
+        <div class="get-container">
+          <input type="button" id="get-data" value="Go">
+        </div>
+      </div>
+      <!-- charts -->
+      <div class="chart-container container">
+        <div class="row">
+          <div class="chart bar">
+            <canvas id="productionChart">
+              <!-- //production bar graph -->
+              
+            </canvas>
+          </div>
+          <div class="chart bar">
+            <canvas id="dispatchChart">
+              <!-- dipatch bar graph -->
+            </canvas>
+          </div>
+        </div>
+        <!-- //second row 3 graphs -->
+        <div class="row">
+          <div class="chart bulkchart pie">
+            <canvas id="bulkNdChart">
+              <!-- bulk pie chart -->
+            </canvas>
+          </div>
+          <div class="chart bulkchart pie">
+            <canvas id="bulkDomChart">
+              <!-- bulk pie chart -->
+            </canvas>
+          </div>
+          <div class="chart pie">
+            <canvas id="consumeChart">
+    
+            </canvas>
+          </div>
+          <div class="chart pie">
+            <canvas id="reciptChart">
+    
+            </canvas>
+          </div>
+        </div>
+        
+        
+      </div>
+    </main>
+    
+
+    <!-- //charts -->
+    
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"
       integrity="sha512-ElRFoEQdI5Ht6kZvyzXhYG9NqjtkmlkfYk0wr6wHxU9JEHakS7UJZNeml5ALk+8IKlU6jDgMabC3vkumRokgJA=="
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     ></script>
-
-    <div class="CategoryButtonContainer">
-      <h1 class="NavbarHeading">Select Category</h1>
-      <button onclick="monthBtn()">Months</button>
-      <button onclick="weekBtn()">Weeks</button>
-      <button onclick="dayBtn()">Days</button>
-    </div>
-    <div class="allButtonsContainerClass" id="allButtonsContainer">
-      <div class="header">
-        <!-- Year drop down list is here  -->
-        <div class="YearSection" id="YearSection">
-          <p class="headingData">Select Years</p>
-          <select name="Year" id="SelectYear" onchange="YearValue()">
-            <option>Years</option>
-            <option>2021</option>
-            <option>2022</option>
-          </select>
-        </div>
-
-        <!-- Months dropdown list is here  -->
-        <div class="monthsSection" id="monthsSection">
-          <p class="headingData">Select Months</p>
-          <select name="months" id="SelectMonth" onchange="MonthValue()">
-            <option style="display: none">Months</option>
-          </select>
-        </div>
-
-        <!-- Weeks dropdown list is here  -->
-        <div class="WeeksSection" id="WeeksSection">
-          <p class="headingData">Select Week</p>
-          <select name="Weeks" id="SelectWeek" onchange="WeekValue()">
-            <option>Weeks</option>
-            <option>Monday</option>
-            <option>Tuesday</option>
-          </select>
-        </div>
-
-        <!-- Days dropdown list is here  -->
-        <div class="DaysSection" id="DaysSection">
-          <p class="headingData">Select Days</p>
-          <select name="Weeks" id="SelectDay" onchange="DayValue()"></select>
-        </div>
-        <button onclick="GetDetails()" class="getDetailsBtn">
-          Get Details
-        </button>
-      </div>
-    </div>
-
-
-    <div class="chart-container">
-      <div class="chart">
-        <canvas id="productionChart">
-
-        </canvas>
-      </div>
-      <div class="chart">
-        <canvas id="dispatchChart">
-
-        </canvas>
-      </div>
-      <div class="chart">
-        <canvas id="bulkChart">
-
-        </canvas>
-      </div>
-      <div class="chart">
-        <canvas id="consumeChart">
-
-        </canvas>
-      </div>
-    </div>
+    <script src="/index.js"></script>
   </body>
-  <script src="/index.js"></script>
 </html>

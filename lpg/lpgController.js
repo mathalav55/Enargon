@@ -43,7 +43,8 @@ var consumableFields = [
   "closingScCaps"
 ];
 var reciptsFieldsLabels = [
-
+  "bulkReceivedDom",
+  "bulkReceivedNd"
 ]
 var allFields = productionfields.concat(dispatchfields);
 var express = require("express");
@@ -83,13 +84,22 @@ router.post("/", async (req, res, next) => {
 
 router.post('/bulk',async(req,res,next)=>{
   //prepeare date from req
+  var firstDay = getFirstDay(req.body);
+  var lastDay = getLastDay(req.body);
+  if (req.body.day) {
+    lastDay = firstDay;
+  }
   var date = new Date(parseInt(req.body.year), parseInt(req.body.month), parseInt(req.body.day), 5, 30);
   //find values with the date
-  var data =await lpg.findOne( {date : date});
+  var data =await lpg.find( {date : { $gte: firstDay.getTime(), $lte: lastDay.getTime() }});
   //prepare data for pie format { fieldname , value}
   var result = [];
-  if( data ){
-    data = data.toObject();
+  if( data.length > 0 ){
+    if(data.length > 1){
+      data = aggregateData(data,bulkOpeningFields,2);
+    }else{
+      data = data[0].toObject();
+    }
     bulkOpeningFields.forEach(field=>{
       result.push({
         x : field,
@@ -105,15 +115,53 @@ router.post('/bulk',async(req,res,next)=>{
 });
 
 router.post('/consume',async (req,res,next)=>{
-  //prepeare date from req
+  var firstDay = getFirstDay(req.body);
+  var lastDay = getLastDay(req.body);
+  if (req.body.day) {
+    lastDay = firstDay;
+  }
   var date = new Date(parseInt(req.body.year), parseInt(req.body.month), parseInt(req.body.day), 5, 30);
   //find values with the date
-  var data =await lpg.findOne( {date : date});
+  var data =await lpg.find( {date : { $gte: firstDay.getTime(), $lte: lastDay.getTime() }});
   //prepare data for pie format { fieldname , value}
   var result = [];
-  if( data ){
-    data = data.toObject();
+  if( data.length > 0 ){
+    if(data.length > 1){
+      data = aggregateData(data,consumableFields,2);
+    }else{
+      data = data[0].toObject();
+    }
     consumableFields.forEach(field=>{
+      result.push({
+        x : field,
+        y : data[field]
+      });
+    }) 
+  }
+  res.status(200).json({
+    result,
+    date,
+  })
+});
+
+router.post('/recipt',async (req,res,next)=>{
+  var firstDay = getFirstDay(req.body);
+  var lastDay = getLastDay(req.body);
+  if (req.body.day) {
+    lastDay = firstDay;
+  } 
+  var date = new Date(parseInt(req.body.year), parseInt(req.body.month), parseInt(req.body.day), 5, 30);
+  //find values with the date
+  var data =await lpg.find( {date : { $gte: firstDay.getTime(), $lte: lastDay.getTime() }});
+  //prepare data for pie format { fieldname , value}
+  var result = [];
+  if( data.length > 0 ){
+    if(data.length > 1){
+      data = aggregateData(data,consumableFields,2);
+    }else{
+      data = data[0].toObject();
+    }
+    reciptsFieldsLabels.forEach(field=>{
       result.push({
         x : field,
         y : data[field]
@@ -145,17 +193,24 @@ async function getGlobalAggregates(lastDay){
   // console.log(aggregate[0]);
   return aggregate[0];
 }
-function aggregateData(data){
+function aggregateData(data,fields,flag = 1){//flags are for aggregation operation 1-sum ; 2-avg
    var newData = Object.create(data[0]);
    newData = newData.toObject();
    var opData;
    for( var i = 1; i < data.length ; i++){
        opData = data[i].toObject();
-       for(var j = 0; j < allFields.length ; j++){
-          newData[allFields[j]] += opData[allFields[j]];
+       for(var j = 0; j < fields.length ; j++){
+          newData[fields[j]] += opData[fields[j]];
        }
        var temp = new Date(data[i].date);
        console.log(temp);
+   }
+   if( flag == 2){
+    console.log('before',newData[fields[0]])
+    for(var j = 0; j < fields.length ; j++){
+        newData[fields[j]] /= data.length;
+    }
+    console.log('after',newData[fields[0]])
    }
    return newData;
 }
@@ -166,7 +221,7 @@ function formatData(data) {
   }
   var temp = data;
   if( data.length > 0){
-    temp  = aggregateData(data);
+    temp  = aggregateData(data,allFields);
   }
   var newData = [];
   for(var i = 0 ; i< labels.length ; i++){
