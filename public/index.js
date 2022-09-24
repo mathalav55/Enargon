@@ -298,7 +298,7 @@ async function fetchData() {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   };
-  //console.log(options);
+  console.log(options);
   //production and dispatch data
   fetch("/lpg", options)
     .then((res) => res.json())
